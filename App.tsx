@@ -9,7 +9,11 @@ import { DataGraph } from './components/DataGraph';
 import { WestgardResultsDisplay } from './components/WestgardResultsDisplay';
 import {
   TestData, TestCategoryData, AppData, AnalysisResult, MonthlyAnalysis,
+<<<<<<< HEAD
   BiochemistryTestNames, HematologyTestNames, MONTH_NAMES, CumulativeDataPoint, CategoryMultiPageReportData, TestDataForReport
+=======
+  BiochemistryTestNames, HematologyTestNames, MONTH_NAMES, CumulativeDataPoint, CategoryReportData
+>>>>>>> 6a843952fbc9d61b359a862d3279608ef2e5b684
 } from './components/types';
 import { calculateStatsForSeries } from './services/qcCalculator';
 import { evaluateWestgardRules } from './services/westgardRulesService';
@@ -19,14 +23,22 @@ import { ReferenceDataDisplay } from './components/ReferenceDataDisplay';
 import { ComplianceDisplay } from './components/ComplianceDisplay';
 import { SigmaMetricsDisplay } from './components/SigmaMetricsDisplay';
 import { MonthlyDataGrid } from './components/MonthlyDataGrid';
+<<<<<<< HEAD
+=======
+import { CumulativeStatsDisplay } from './components/CumulativeStatsDisplay';
+>>>>>>> 6a843952fbc9d61b359a862d3279608ef2e5b684
 import { exportToPdf, exportToExcel } from './services/pdfReportService';
 import Auth from './components/Auth';
 import { UserProfile } from './components/UserProfile';
 import { ComparisonDisplay } from './components/ComparisonDisplay';
 import { parseMultiLineNumericString } from './utils/parsingUtils';
+<<<<<<< HEAD
 import { CategoryReport } from './components/CategoryReport';
 import { CumulativeStatsDisplay } from './components/CumulativeStatsDisplay';
 
+=======
+import { PdfGenerator } from './components/PdfGenerator';
+>>>>>>> 6a843952fbc9d61b359a862d3279608ef2e5b684
 
 // --- Shamsi Calendar Utilities ---
 const GREGORIAN_EPOCH = 1721425.5;
@@ -109,7 +121,11 @@ const App: React.FC = () => {
   const [selectedMonth, setSelectedMonth] = useState(currentShamsiMonth);
   const [selectedYear, setSelectedYear] = useState(currentShamsiYear);
   
+<<<<<<< HEAD
   const [categoryReportData, setCategoryReportData] = useState<CategoryMultiPageReportData | null>(null);
+=======
+  const [pdfGenerationData, setPdfGenerationData] = useState<CategoryReportData | null>(null);
+>>>>>>> 6a843952fbc9d61b359a862d3279608ef2e5b684
 
   useEffect(() => {
     const storedUser = localStorage.getItem('qcAppUser');
@@ -129,7 +145,11 @@ const App: React.FC = () => {
       setUser(null);
       setAppData(null);
       setActiveTestId(null);
+<<<<<<< HEAD
       setCategoryReportData(null);
+=======
+      setPdfGenerationData(null);
+>>>>>>> 6a843952fbc9d61b359a862d3279608ef2e5b684
       setIsLoading(true);
   };
 
@@ -378,7 +398,11 @@ const App: React.FC = () => {
   };
   
  const handleGenerateCategoryPdf = (categoryName: string) => {
+<<<<<<< HEAD
     setCategoryReportData(null); 
+=======
+    setPdfGenerationData(null); 
+>>>>>>> 6a843952fbc9d61b359a862d3279608ef2e5b684
     setErrorMessage(null);
 
     if (!appData) {
@@ -392,6 +416,7 @@ const App: React.FC = () => {
         return;
     }
 
+<<<<<<< HEAD
     const testsForReport: TestDataForReport[] = category.tests
         .map(test => {
             const chartData = aggregateAllDataForTest(test);
@@ -413,13 +438,60 @@ const App: React.FC = () => {
 
     if (testsForReport.length === 0) {
         setErrorMessage(`No analyzed tests with data found in the ${categoryName} category to generate a report.`);
+=======
+    const testAnalyses = category.tests
+        .map(test => {
+            const chartData = aggregateAllDataForTest(test);
+            if (chartData.length === 0) return null;
+
+            const dataValues = chartData.map(d => d.value);
+            const targetMean = parseFloat(test.targetMeanStr);
+            if (isNaN(targetMean)) return null;
+
+            const stats = calculateStatsForSeries(dataValues, targetMean);
+            const violations = evaluateWestgardRules(dataValues, stats.observedMean, stats.observedSD);
+
+            let sigmaMetrics: AnalysisResult['sigmaMetric'] = null;
+            const teaStrToUse = test.cliaTEaStr || test.refBioTEaStr;
+            if (stats.observedCV !== null && stats.biasPercent !== null && teaStrToUse) {
+                const tea = parseFloat(teaStrToUse);
+                if (!isNaN(tea)) {
+                    const sigmaValue = calculateSigmaMetric(tea, stats.biasPercent, stats.observedCV);
+                    sigmaMetrics = {
+                        sigmaValue,
+                        assessment: getSigmaAssessment(sigmaValue),
+                        details: `TEa=${tea}%, Bias=${stats.biasPercent.toFixed(2)}%, CV=${stats.observedCV.toFixed(2)}%`,
+                    };
+                }
+            }
+
+            const analysis: AnalysisResult = {
+                timestamp: new Date().toISOString(),
+                calculatedStats: stats,
+                westgardViolations: violations,
+                sigmaMetric: sigmaMetrics,
+            };
+
+            return { test, analysis, chartData };
+        })
+        .filter((item): item is { test: TestData; analysis: AnalysisResult; chartData: CumulativeDataPoint[] } => item !== null);
+
+    if (testAnalyses.length === 0) {
+        setErrorMessage(`No data available to generate a report for the ${categoryName} category.`);
+>>>>>>> 6a843952fbc9d61b359a862d3279608ef2e5b684
         setTimeout(() => setErrorMessage(null), 4000);
         return;
     }
     
+<<<<<<< HEAD
     setCategoryReportData({
         categoryName,
         tests: testsForReport,
+=======
+    setPdfGenerationData({
+        categoryName,
+        testAnalyses,
+>>>>>>> 6a843952fbc9d61b359a862d3279608ef2e5b684
     });
 };
 
@@ -733,9 +805,17 @@ const App: React.FC = () => {
   return (
     <>
         {renderDashboard()}
+<<<<<<< HEAD
         {categoryReportData && <CategoryReport data={categoryReportData} onClose={() => setCategoryReportData(null)} />}
+=======
+        {pdfGenerationData && <PdfGenerator data={pdfGenerationData} onComplete={() => setPdfGenerationData(null)} />}
+>>>>>>> 6a843952fbc9d61b359a862d3279608ef2e5b684
     </>
   );
 };
 
+<<<<<<< HEAD
 export default App;
+=======
+export default App;
+>>>>>>> 6a843952fbc9d61b359a862d3279608ef2e5b684

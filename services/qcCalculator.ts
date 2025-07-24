@@ -1,5 +1,9 @@
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6a843952fbc9d61b359a862d3279608ef2e5b684
 import { CalculatedStats } from '../components/types';
 
 // Helper function to calculate Mean
@@ -27,6 +31,7 @@ const calculateCV = (sd: number | null, mean: number | null): number | null => {
   return Math.abs((sd / mean) * 100); // CV is usually positive
 };
 
+<<<<<<< HEAD
 export const calculateZScore = (value: number, mean: number, sd: number): number | null => {
   if (sd === 0 || sd === null || isNaN(sd)) return null; // Avoid division by zero or invalid SD
   return (value - mean) / sd;
@@ -48,6 +53,13 @@ export const calculateTotalError = (biasPercent: number | null, cvPercent: numbe
 };
 
 
+=======
+export const calculateZScore = (value: number, targetMean: number, calculatedSD: number): number | null => {
+  if (calculatedSD === 0 || calculatedSD === null || isNaN(calculatedSD)) return null; // Avoid division by zero or invalid SD
+  return (value - targetMean) / calculatedSD;
+};
+
+>>>>>>> 6a843952fbc9d61b359a862d3279608ef2e5b684
 export const calculateStatsForSeries = (
   observedValues: number[], // Assumes already filtered for valid numbers
   targetMeanVal: number
@@ -66,8 +78,11 @@ export const calculateStatsForSeries = (
       biasPercent = (bias / targetMeanVal) * 100;
     }
   }
+<<<<<<< HEAD
   
   const totalErrorPercent = calculateTotalError(biasPercent, observedCV);
+=======
+>>>>>>> 6a843952fbc9d61b359a862d3279608ef2e5b684
 
   return {
     count,
@@ -76,6 +91,11 @@ export const calculateStatsForSeries = (
     observedCV,
     bias,
     biasPercent,
+<<<<<<< HEAD
     totalErrorPercent
   };
 };
+=======
+  };
+};
+>>>>>>> 6a843952fbc9d61b359a862d3279608ef2e5b684

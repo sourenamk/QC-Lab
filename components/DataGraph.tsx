@@ -1,8 +1,14 @@
 
+<<<<<<< HEAD
 
 import React, { useMemo } from 'react';
 import { calculateZScore } from '../services/qcCalculator';
 import { WestgardRuleViolation, CumulativeDataPoint } from './types';
+=======
+import React, { useMemo } from 'react';
+import { calculateZScore } from '../services/qcCalculator';
+import { WestgardRuleViolation, CumulativeDataPoint, MONTH_NAMES } from './types';
+>>>>>>> 6a843952fbc9d61b359a862d3279608ef2e5b684
 
 interface DataGraphProps {
   data: CumulativeDataPoint[];
@@ -45,7 +51,11 @@ export const DataGraph: React.FC<DataGraphProps> = ({
 
   const width = propWidth || 600;
   const height = propHeight || 350;
+<<<<<<< HEAD
   const margin = { top: 30, right: 40, bottom: 80, left: 60 }; 
+=======
+  const margin = { top: 30, right: 40, bottom: 50, left: 60 }; 
+>>>>>>> 6a843952fbc9d61b359a862d3279608ef2e5b684
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
 
@@ -73,9 +83,15 @@ export const DataGraph: React.FC<DataGraphProps> = ({
   const yScale = (value: number) => margin.top + chartHeight - ((value - effectiveYMin) / (effectiveYMax - effectiveYMin)) * chartHeight;
 
   const controlLines = [];
+<<<<<<< HEAD
   if (targetMean !== null) controlLines.push({ value: targetMean, label: `Target Mean (${targetMean.toFixed(2)})`, color: '#d97706', dashArray: "6 3" });
   if (observedMean !== null) {
       controlLines.push({ value: observedMean, label: `Mean (${observedMean.toFixed(2)})`, color: '#10b981' });
+=======
+  if (targetMean !== null) controlLines.push({ value: targetMean, label: `Test Target (${targetMean.toFixed(2)})`, color: '#d97706', dashArray: "6 3" });
+  if (observedMean !== null) {
+      controlLines.push({ value: observedMean, label: `Cumulative Mean (${observedMean.toFixed(2)})`, color: '#10b981' });
+>>>>>>> 6a843952fbc9d61b359a862d3279608ef2e5b684
       if (observedSD !== null && observedSD > 0) {
           for (let i = 1; i <= 3; i++) {
               controlLines.push({ value: observedMean + i * observedSD, label: `+${i}SD`, color: '#6b7280', opacity: i === 3 ? 0.9 : 0.6, dashArray: "3 3" });
@@ -85,11 +101,32 @@ export const DataGraph: React.FC<DataGraphProps> = ({
   }
 
   const linePath = dataPoints.length > 1 ? dataPoints.map((v, i) => `${i === 0 ? 'M' : 'L'} ${xScale(i)} ${yScale(v)}`).join(' ') : null;
+<<<<<<< HEAD
+=======
+  
+  const monthLabels: { index: number; label: string }[] = [];
+  let lastMonth = -1;
+  data.forEach((point, i) => {
+    const shamsiDateParts = new Intl.DateTimeFormat('fa-IR-u-nu-latn', { calendar: 'persian' }).formatToParts(point.date);
+    const month = parseInt(shamsiDateParts.find(p => p.type === 'month')?.value ?? '0', 10) - 1;
+    const year = parseInt(shamsiDateParts.find(p => p.type === 'year')?.value ?? '0', 10);
+    
+    if (month !== lastMonth) {
+      monthLabels.push({
+        index: i,
+        label: MONTH_NAMES[month] + `'${String(year).slice(2)}`,
+      });
+      lastMonth = month;
+    }
+  });
+
+>>>>>>> 6a843952fbc9d61b359a862d3279608ef2e5b684
 
   return (
     <div id={id} className={`mt-6 p-4 border rounded-lg shadow ${isPdf ? 'bg-white border-gray-200' : 'bg-gray-800 border-gray-700'}`}>
       <h4 className={`text-lg font-semibold mb-3 text-center printable-hidden ${isPdf ? 'text-black' : 'text-gray-200'}`}>{title}</h4>
       <svg viewBox={`0 0 ${width} ${height}`} aria-labelledby="chart-title" role="img" className="w-full h-auto">
+<<<<<<< HEAD
         <title id="chart-title">{title || "Levey-Jennings Chart"}</title>
         
         {/* Y-axis label */}
@@ -104,10 +141,14 @@ export const DataGraph: React.FC<DataGraphProps> = ({
         >
             Concentration
         </text>
+=======
+        <title id="chart-title">{title}</title>
+>>>>>>> 6a843952fbc9d61b359a862d3279608ef2e5b684
         
         {controlLines.map(line => (
           <g key={line.label}>
             <line x1={margin.left} y1={yScale(line.value)} x2={width - margin.right} y2={yScale(line.value)} stroke={line.color} strokeWidth="1" strokeDasharray={line.dashArray} opacity={line.opacity}/>
+<<<<<<< HEAD
             <text x={width - margin.right + 4} y={yScale(line.value) + 3} textAnchor="start" fontSize="8px" fill={line.color} fontWeight="medium">{line.label}</text>
           </g>
         ))}
@@ -144,6 +185,19 @@ export const DataGraph: React.FC<DataGraphProps> = ({
             );
         })}
         <text x={width / 2} y={height - 5} textAnchor="middle" fontSize="10px" fill={isPdf ? '#333' : '#9ca3af'}>Date</text>
+=======
+            <text x={margin.left - 8} y={yScale(line.value) + 3} textAnchor="end" fontSize="8px" fill={line.color} fontWeight="medium">{line.label}</text>
+          </g>
+        ))}
+
+        {monthLabels.map(({ index, label }) => (
+          <g key={`month-label-${index}`}>
+            <text x={xScale(index)} y={height - margin.bottom + 20} textAnchor="middle" fontSize="10px" fill={isPdf ? '#374151' : '#d1d5db'}>{label}</text>
+            <line x1={xScale(index)} y1={height - margin.bottom} x2={xScale(index)} y2={height - margin.bottom + 5} stroke={isPdf ? '#374151' : '#d1d5db'} strokeWidth="1" />
+          </g>
+        ))}
+        <line x1={margin.left} y1={height - margin.bottom} x2={width - margin.right} y2={height - margin.bottom} stroke={isPdf ? '#374151' : '#d1d5db'} strokeWidth="1"/>
+>>>>>>> 6a843952fbc9d61b359a862d3279608ef2e5b684
 
         {linePath && <path d={linePath} fill="none" stroke="#818cf8" strokeWidth="1.5" />}
 
@@ -190,4 +244,8 @@ export const DataGraph: React.FC<DataGraphProps> = ({
       </svg>
     </div>
   );
+<<<<<<< HEAD
 };
+=======
+};
+>>>>>>> 6a843952fbc9d61b359a862d3279608ef2e5b684

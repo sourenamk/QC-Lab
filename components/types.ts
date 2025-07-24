@@ -1,5 +1,8 @@
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 6a843952fbc9d61b359a862d3279608ef2e5b684
 export const MONTH_NAMES = [
   "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
   "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"
@@ -89,7 +92,10 @@ export interface CalculatedStats {
   observedCV: number | null;
   bias: number | null; 
   biasPercent: number | null;
+<<<<<<< HEAD
   totalErrorPercent: number | null;
+=======
+>>>>>>> 6a843952fbc9d61b359a862d3279608ef2e5b684
 }
 
 // For Westgard rule violations
@@ -107,6 +113,7 @@ export interface CumulativeDataPoint {
   isCurrentMonth: boolean;
 }
 
+<<<<<<< HEAD
 // --- NEW MULTI-PAGE PDF REPORT TYPES ---
 
 export interface TestDataForReport {
@@ -119,3 +126,16 @@ export interface CategoryMultiPageReportData {
   categoryName: string;
   tests: TestDataForReport[];
 }
+=======
+// Data for the comprehensive category report
+export interface CategoryTestAnalysis {
+  test: TestData;
+  analysis: AnalysisResult;
+  chartData: CumulativeDataPoint[];
+}
+
+export interface CategoryReportData {
+  categoryName: string;
+  testAnalyses: CategoryTestAnalysis[];
+}
+>>>>>>> 6a843952fbc9d61b359a862d3279608ef2e5b684
